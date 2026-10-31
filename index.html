@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 330px;
+    overflow: hidden;
+    font-family: Georgia, serif;
+    color: #9f617a;
+    background: linear-gradient(145deg, #fff5f7, #f9dce7, #fff0f3);
+  }
+
+  .scene {
+    position: relative;
+    min-height: 330px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 24px;
+  }
+
+  .content { z-index: 2; }
+
+  h1 {
+    font-size: clamp(25px, 6vw, 38px);
+    font-weight: normal;
+    margin: 0 0 12px;
+  }
+
+  p { font-size: 14px; }
+
+  button {
+    margin-top: 12px;
+    padding: 13px 24px;
+    border: 1px solid #e8b5c7;
+    border-radius: 30px;
+    background: #fffafd;
+    color: #a65f7b;
+    font: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 18px #d99bb733;
+  }
+
+  button:hover { background: #ffeaf1; }
+
+  .butterfly {
+    position: absolute;
+    left: -45px;
+    bottom: 0;
+    font-size: 25px;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .playing .butterfly {
+    opacity: 0.85;
+    animation: fly 8s linear infinite;
+  }
+
+  .playing .b2 {
+    animation-delay: -2.5s;
+    animation-duration: 10s;
+    font-size: 20px;
+  }
+
+  .playing .b3 {
+    animation-delay: -5s;
+    animation-duration: 7s;
+    font-size: 30px;
+  }
+
+  @keyframes fly {
+    0%   { transform: translate(0, 30px) rotate(-15deg); }
+    25%  { transform: translate(30vw, -110px) rotate(15deg); }
+    50%  { transform: translate(60vw, -35px) rotate(-10deg); }
+    75%  { transform: translate(85vw, -150px) rotate(20deg); }
+    100% { transform: translate(115vw, -70px) rotate(-15deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .playing .butterfly { animation-duration: 20s; }
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <span class="butterfly">🦋</span>
+  <span class="butterfly b2">🦋</span>
+  <span class="butterfly b3">🦋</span>
+
+  <div class="content">
+    <h1>A Little Love Note ♡</h1>
+    <p>A little melody, a little magic, just for you.</p>
+    <button id="playBtn" type="button">♫ Press to begin ♡</button>
+    <p id="status" aria-live="polite">Made with love ✿</p>
+    <audio id="music" src="song.mp3" preload="none"
+           loop></audio>
+  </div>
+</div>
+
+<script>
+  const scene = document.getElementById("scene");
+  const music = document.getElementById("music");
+  const button = document.getElementById("playBtn");
+  const status = document.getElementById("status");
+
+  button.addEventListener("click", async () => {
+    if (music.paused) {
+      try {
+        await music.play();
+        scene.classList.add("playing");
+        button.textContent = "♫ Pause the music";
+        status.textContent = "A little magic for you ♡";
+      } catch (error) {
+        status.textContent =
+          "Music couldn't play. Check the audio file and try again.";
+      }
+    } else {
+      music.pause();
+      scene.classList.remove("playing");
+      button.textContent = "♫ Press to begin ♡";
+      status.textContent = "Until the next melody ✿";
+    }
+  });
+
+  music.addEventListener("ended", () => {
+    scene.classList.remove("playing");
+    button.textContent = "♫ Press to begin ♡";
+  });
+</script>
+</body>
+</html>
